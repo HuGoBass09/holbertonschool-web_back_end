@@ -8,4 +8,4 @@ from typing import Tuple, Union
 
 def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
     """A function to create a tuple from two arguments"""
-    return tuple(k, v**2)
+    return (k, v ** 2)
