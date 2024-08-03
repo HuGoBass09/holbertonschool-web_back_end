@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""program that creates an async generator"""
+"""A function that uses async comprehension"""
 
 import asyncio
 from typing import List
