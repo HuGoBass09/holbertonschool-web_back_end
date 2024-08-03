@@ -8,7 +8,10 @@ import time
 
 
 async def measure_runtime() -> float:
-    """A function to measure runtime for async_comprehension"""
+    """
+    A function to measure runtime 
+    for async_comprehension
+    """
     start_time = time.time()
     await asyncio.gather(*(async_comprehension() for _ in range(4)))
     end_time = time.time()
