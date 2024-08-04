@@ -5,7 +5,7 @@ from base_caching import BaseCaching
 
 
 class LIFOCache(BaseCaching):
-    """FIFOCache class"""
+    """LIFOCache class"""
 
     def put(self, key, item):
         """A function to add an element to the cache"""
