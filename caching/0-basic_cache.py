@@ -5,6 +5,8 @@ from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
+    """Basic Cache class"""
+
     def put(self, key, item):
         """A function to add an element to the cache"""
         if key and item:
@@ -14,5 +16,3 @@ class BasicCache(BaseCaching):
         """A function to get an item using the given key"""
         if key in self.cache_data:
             return self.cache_data[key]
-
-        return None
