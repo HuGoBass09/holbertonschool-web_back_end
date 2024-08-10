@@ -46,7 +46,7 @@ class Server:
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict[str, Any]:
         """A function to get hypermedia pagination"""
         pages: List[List] = self.get_page(page, page_size)
-        total_pages: int = math.ceil(len(self.dataset) / page_size)
+        total_pages: int = math.ceil(len(self.dataset()) / page_size)
         return {
             "page_size": page_size,
             "page": page,
