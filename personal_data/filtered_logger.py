@@ -50,9 +50,9 @@ def get_logger() ->logging.Logger:
     logger.addHandler(stream)
     return logger
 
-def get_db() ->mysql.connector.connection.MYSQLConnection:
+def get_db() ->mysql.connector.connection.MySQLConnection:
     """A function which returns a connector to database"""
-    connection = mysql.connector.connection.MYSQLConnection(
+    connection = mysql.connector.connection.MySQLConnection(
         user=getenv("PERSONAL_DATA_DB_USERNAME","root"),
         password=getenv("PERSONAL_DATA_DB_PASSWORD", ""),
         host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
