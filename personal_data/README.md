@@ -1,0 +1,1 @@
+Python logging and password encrypting tasks
