@@ -1,144 +1,84 @@
 #!/usr/bin/env python3
-""" Ofuscated and replace with regex """
+"""Filtered logger module"""
+
 import re
 from typing import List
 import logging
 import mysql.connector
 from os import getenv
 
-PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
-def filter_datum(fields: List[str], redaction: str, message: str,
-                 separator: str) -> str:
-    """
-        Args:
-            fields: a list of strings representing all fields to obfuscate
-            redaction: a string representing by what the
-                       field will be obfuscated
-            message: a string representing the log line
-            separator: a string representing by which character is
-                    separating all fields in the log line (message)
-        Return:
-            String with string ofuscated
-    """
+def filter_datum(
+    fields: List[str], redaction: str, message: str, separator: str
+) -> str:
+    """A function to filter required fields in a log"""
     for field in fields:
-        message = re.sub(f'{field}=.+?{separator}',
-                         f'{field}={redaction}{separator}', message)
+        message = re.sub(
+            f"{field}=.+?{separator}", f"{field}={redaction}{separator}", message
+        )
     return message
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class
-        Description: Update the class to accept a list of strings fields
-                     constructor argument.
-
-        Implement the format method to filter values in incoming log records
-        using filter_datum. Values for fields in fields should be filtered.
-
-        DO NOT extrapolate FORMAT manually. The format method should be less
-        than 5 lines long
-    """
+    """Redacting Formatter class"""
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
-        """ Constructor Method """
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """ Filters values in incoming log records using filter_datum """
-        return filter_datum(self.fields, self.REDACTION,
-                            super(RedactingFormatter, self).format(record),
-                            self.SEPARATOR)
+        """Formatting method for logs"""
+        msg = filter_datum(self.fields, self.REDACTION,
+                           record.getMessage(), self.SEPARATOR)
+        return (self.FORMAT %
+                {"name": record.name, "levelname": record.levelname, "asctime":
+                 self.formatTime(record, self.datefmt), "message": msg})
 
 
-def get_logger() -> logging.Logger:
-    ''' Description: Implement a get_logger function that takes no arguments
-                     and returns a logging.Logger object.
-
-        The logger should be named "user_data" and only log up to logging.INFO
-        level. It should not propagate messages to other loggers. It should
-        have a StreamHandler with RedactingFormatter as formatter.
-
-        Create a tuple PII_FIELDS constant at the root of the module containing
-        the fields from user_data.csv that are considered PII. PII_FIELDS can
-        contain only 5 fields - choose the right list of fields that can are
-        considered as "important" PIIs or information that you must hide in
-        your logs. Use it to parameterize the formatter.
-    '''
-    log = logging.getLogger('user_data')
-    log.setLevel(logging.INFO)
-    log.propagate = False
-
-    sh = logging.StreamHandler()
-    formatter = RedactingFormatter(list(PII_FIELDS))
-    sh.setFormatter(formatter)
-    log.addHandler(sh)
-
-    return log
+def get_logger() ->logging.Logger:
+    """A function which returns a logging object"""
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    stream = logging.StreamHandler()
+    stream.setFormatter(RedactingFormatter(PII_FIELDS))
+    logger.addHandler(stream)
+    return logger
 
 
-def get_db() -> mysql.connector.connection.MySQLConnection:
-    ''' Description: you will connect to a secure holberton database to read a
-                     users table. The database is protected by a username and
-                     password that are set as environment variables on the
-                     server named PERSONAL_DATA_DB_USERNAME (set the default as
-                     "root"), PERSONAL_DATA_DB_PASSWORD (set the default as an
-                     empty string) and PERSONAL_DATA_DB_HOST (set the default
-                     as "localhost").
-
-        The database name is stored in PERSONAL_DATA_DB_NAME.
-
-        Implement a get_db function that returns a connector to the database
-        (mysql.connector.connection.MySQLConnection object).
-
-           - Use the os module to obtain credentials from the environment
-           - Use the module mysql-connector-python to connect to the MySQL
-             database (pip3 install mysql-connector-python)
-    '''
-    connection_db = mysql.connector.connection.MySQLConnection(
-        user=getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
-        password=getenv('PERSONAL_DATA_DB_PASSWORD', ''),
-        host=getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
-        database=getenv('PERSONAL_DATA_DB_NAME'))
-
-    return connection_db
+def get_db() ->mysql.connector.connection.MySQLConnection:
+    """A function which returns a connector to database"""
+    connection = mysql.connector.connection.MySQLConnection(
+        user=getenv("PERSONAL_DATA_DB_USERNAME","root"),
+        password=getenv("PERSONAL_DATA_DB_PASSWORD", ""),
+        host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+        database=getenv("PERSONAL_DATA_DB_NAME")    
+    )
+    return connection
 
 
 def main():
-    '''
-        Description: Implement a main function that takes no arguments and
-                     returns nothing.
-
-        The function will obtain a database connection using get_db and
-        retrieve all rows in the users table and display each row under a
-        filtered format
-
-        Filtered fields:
-                          name
-                          email
-                          phone
-                          ssn
-                          password
-    '''
-    database = get_db()
-    cursor = database.cursor()
+    """Obtains a database connection using get_db and retrieves all rows"""
+    db_connection = get_db()
+    cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM users;")
     fields = [i[0] for i in cursor.description]
-
-    log = get_logger()
-
+    
+    logger = get_logger()
+    
     for row in cursor:
-        str_row = ''.join(f'{f}={str(r)}; ' for r, f in zip(row, fields))
-        log.info(str_row.strip())
-
+        str_row = "".join(f"{f}={str(r)}; " for r, f in zip(row,fields))
+        logger.info(str_row.strip())
+        
     cursor.close()
-    database.close()
-
-
-if __name__ == '__main__':
+    db_connection.close()
+    
+    
+if __name__ == "__main__":
     main()
