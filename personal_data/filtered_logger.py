@@ -29,7 +29,9 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """ Filters values in incoming log records using filter_datum """
-        return filter_datum(self.fields, self.REDACTION,
-                            super(RedactingFormatter, self).format(record),
-                            self.SEPARATOR)
+        """Formatting method for logs"""
+        msg = filter_datum(self.fields, self.REDACTION,
+                           record.getMessage(), self.SEPARATOR)
+        return (self.FORMAT %
+                {"name": record.name, "levelname": record.levelname, "asctime":
+                 self.formatTime(record, self.datefmt), "message": msg})
