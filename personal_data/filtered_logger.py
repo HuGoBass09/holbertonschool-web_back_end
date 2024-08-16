@@ -6,11 +6,11 @@ from typing import List
 
 
 def filter_datum(
-    fields: List[str], redaction: str, message: str, seperator: str
+    fields: List[str], redaction: str, message: str, separator: str
 ) -> str:
-    """A function to filter required fields"""
-    for item in fields:
+    """A function to filter required fields in a log"""
+    for field in fields:
         message = re.sub(
-            f"{item}=.+?{seperator}", f"{item}={redaction}{seperator}", message
+            f"{field}=.+?{separator}", f"{field}={redaction}{separator}", message
         )
     return message
