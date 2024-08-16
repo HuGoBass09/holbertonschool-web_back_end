@@ -34,14 +34,18 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Formatting method for logs"""
-        msg = filter_datum(self.fields, self.REDACTION,
-                           record.getMessage(), self.SEPARATOR)
-        return (self.FORMAT %
-                {"name": record.name, "levelname": record.levelname, "asctime":
-                 self.formatTime(record, self.datefmt), "message": msg})
+        msg = filter_datum(
+            self.fields, self.REDACTION, record.getMessage(), self.SEPARATOR
+        )
+        return self.FORMAT % {
+            "name": record.name,
+            "levelname": record.levelname,
+            "asctime": self.formatTime(record, self.datefmt),
+            "message": msg,
+        }
 
 
-def get_logger() ->logging.Logger:
+def get_logger() -> logging.Logger:
     """A function which returns a logging object"""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
@@ -52,13 +56,13 @@ def get_logger() ->logging.Logger:
     return logger
 
 
-def get_db() ->mysql.connector.connection.MySQLConnection:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """A function which returns a connector to database"""
     connection = mysql.connector.connection.MySQLConnection(
-        user=getenv("PERSONAL_DATA_DB_USERNAME","root"),
+        user=getenv("PERSONAL_DATA_DB_USERNAME", "root"),
         password=getenv("PERSONAL_DATA_DB_PASSWORD", ""),
         host=getenv("PERSONAL_DATA_DB_HOST", "localhost"),
-        database=getenv("PERSONAL_DATA_DB_NAME")    
+        database=getenv("PERSONAL_DATA_DB_NAME"),
     )
     return connection
 
@@ -69,16 +73,16 @@ def main():
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM users;")
     fields = [i[0] for i in cursor.description]
-    
+
     logger = get_logger()
-    
+
     for row in cursor:
-        str_row = "".join(f"{f}={str(r)}; " for r, f in zip(row,fields))
+        str_row = "".join(f"{f}={str(r)}; " for r, f in zip(row, fields))
         logger.info(str_row.strip())
-        
+
     cursor.close()
     db_connection.close()
-    
-    
+
+
 if __name__ == "__main__":
     main()
