@@ -14,11 +14,3 @@ def filter_datum(
             f"{field}=.+?{separator}", f"{field}={redaction}{separator}", message
         )
     return message
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
