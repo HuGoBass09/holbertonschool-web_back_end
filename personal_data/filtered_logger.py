@@ -11,6 +11,6 @@ def filter_datum(
     """A function to filter required fields"""
     for item in fields:
         message = re.sub(
-            f"{item}=.*?{seperator}", f"{item}={redaction}{seperator}", message
+            f"{item}=.+?{seperator}", f"{item}={redaction}{seperator}", message
         )
     return message
