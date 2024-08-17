@@ -33,4 +33,4 @@ def unauthorized_abort() -> str:
     Return:
       - 401 status code
     """
-    return abort(401)
+    abort(401)
