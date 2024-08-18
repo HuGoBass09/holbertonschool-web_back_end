@@ -41,8 +41,7 @@ def forbidden(error) -> str:
 
 @app.before_request
 def before_request() -> str:
-    """before_request handler"""
-
+    """before_request handler for all routes"""
     if auth is None:
         return
 
@@ -53,7 +52,6 @@ def before_request() -> str:
 
     if (auth.authorization_header(request)) is None:
         abort(401)
-
     if (auth.current_user(request)) is None:
         abort(403)
 
