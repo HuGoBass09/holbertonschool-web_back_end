@@ -1,20 +1,34 @@
 #!/usr/bin/env python3
-""" Auth module
+""" Module of auth
 """
-
 from flask import request
 from typing import List, TypeVar
 
 
 class Auth:
-    """Auth class"""
+    """Auth Class"""
+
+    def __init__(self):
+        """
+        Constructor
+
+        Args:
+            path: path to authenticate
+            excluded_paths: list of excluded path to authenticate
+        """
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
-        require_auth method that returns
-        True if the path is not in the list
+        Require the auth
+
+        Args:
+            path: path to authenticate
+            excluded_paths: list of excluded path to authenticate
+
+        Return:
+            True if is authenticated otherwise false
         """
-        if path is None or excluded_paths is None or excluded_paths == []:
+        if path is None or excluded_paths is None or len(excluded_paths) == 0:
             return True
 
         if path[-1] is not "/":
@@ -30,12 +44,28 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """authorization_header method that returns none"""
+        """
+        Look the headers
+
+        Args:
+            request: Look the autthorization
+
+        Return:
+            The authorization header or None
+        """
         if request is None:
             return None
 
-        return request.headers.get('Authorization', None)
+        return request.headers.get("Authorization", None)
 
     def current_user(self, request=None) -> TypeVar("User"):
-        """current_user method that returns None"""
+        """
+        Look current user
+
+        Args:
+            request: Look the reques user
+
+        Return:
+            The user
+        """
         return request
