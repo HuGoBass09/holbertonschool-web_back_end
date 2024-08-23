@@ -38,7 +38,7 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
-        """A method for finding a spesific user"""
+        """A method to find a spesific user"""
         session = self._session
         try:
             results = session.query(User).filter_by(**kwargs).first()
