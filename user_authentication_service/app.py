@@ -46,9 +46,20 @@ def login() -> str:
 
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
-        response = jsonify({"email": "{}".format(email),
-                            "message": "logged in"})
+        response = jsonify({"email": "{}".format(email), "message": "logged in"})
         response.set_cookie("session_id", session_id)
         return response
     else:
         abort(401)
+
+
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout() -> str:
+    "Logout function"
+    session_id = request.cookies.get("session_id")
+    try:
+        user = AUTH.get_user_from_session_id(session_id)
+        AUTH.destroy_session(user.id)
+        return redirect("/", 302)
+    except Exception:
+        abort(403)
