@@ -8,6 +8,7 @@ from flask import Flask, jsonify, abort, request
 from flask_cors import CORS, cross_origin
 import os
 
+
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
@@ -32,48 +33,30 @@ def not_found(error) -> str:
 
 @app.errorhandler(401)
 def unauthorized(error) -> str:
-    """Handle a unauthorized access
-
-    Args:
-        error: Error catch
-
-    Return:
-        Info of the error
-    """
+    """unauthorized handler"""
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
-    """Handle a forbidden resource
-
-    Args:
-        error: Error catch
-
-    Return:
-        Info of the error
-    """
+    """forbidden handler"""
     return jsonify({"error": "Forbidden"}), 403
 
 
 @app.before_request
 def before_request() -> str:
-    """Execute before each request
-
-    Return:
-        String or nothing
-    """
+    """before_request handler for all routes"""
     if auth is None:
         return
 
-    expath = ["/api/v1/status/", "/api/v1/unauthorized/", "/api/v1/forbidden/"]
+    pathes = ["/api/v1/status/", "/api/v1/unauthorized/",
+              "/api/v1/forbidden/"]
 
-    if not (auth.require_auth(request.path, expath)):
+    if not (auth.require_auth(request.path, pathes)):
         return
 
     if (auth.authorization_header(request)) is None:
         abort(401)
-
     if (auth.current_user(request)) is None:
         abort(403)
 
