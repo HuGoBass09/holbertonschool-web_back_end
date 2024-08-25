@@ -40,13 +40,15 @@ def register_user() -> str:
 
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
-    "Login function"
+    """login function"""
     email = request.form.get("email")
     password = request.form.get("password")
 
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
-        response = jsonify({"email": f"{email}", "message": "logged in"})
+        response = jsonify({"email": "{}".format(email),
+                            "message": "logged in"})
         response.set_cookie("session_id", session_id)
+        return response
     else:
         abort(401)
