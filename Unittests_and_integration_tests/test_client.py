@@ -19,3 +19,12 @@ class TestGithubOrgClient(unittest.TestCase):
         spec = GithubOrgClient(data)
         spec.org()
         mock.assert_called_once_with(endpoint)
+
+    def test_public_repos_url(self):
+        """A method to test _public_repos_url property"""
+        expected = "www.yes.com"
+        payload = {"repos_url": expected}
+        to_mock = "client.GithubOrgClient.org"
+        with patch(to_mock, PropertyMock(return_value=payload)):
+            cli = GithubOrgClient("a")
+            self.assertEqual(cli._public_repos_url, expected)
