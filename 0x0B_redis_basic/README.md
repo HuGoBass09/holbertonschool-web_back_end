@@ -1,0 +1,1 @@
+Learning redis basics
