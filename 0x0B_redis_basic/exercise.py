@@ -10,6 +10,19 @@ from functools import wraps
 UnionOfTypes = Union[str, bytes, int, float]
 
 
+def count_calls(method: Callable) -> Callable:
+    """A method to count number of calls"""
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """Wrapper of decorator"""
+        self._redis.incr(key)
+        return method(self, *args, **kwds)
+
+    return wrapper
+
+
 class Cache:
     """Cache redis class"""
 
@@ -18,6 +31,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: UnionOfTypes) -> str:
         """A method to store data into redis cache"""
         key = str(uuid4())
