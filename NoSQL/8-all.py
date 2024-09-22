@@ -4,10 +4,9 @@
 import pymongo
 
 
-def list_all(mongo_collection: pymongo) -> list:
+def list_all(mongo_collection) -> list:
     """A function to list all documents in a collection"""
-    query = mongo_collection.find()
-    if mongo_collection.count() == 0:
-        return []
-
-    return list(query)
+    collections: list = []
+    for doc in mongo_collection.find():
+        collections.append(doc)
+    return collections
