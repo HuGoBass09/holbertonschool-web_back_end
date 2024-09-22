@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""MongoDB module"""
+"""MongoDB module for listing documents"""
 
 import pymongo
 
