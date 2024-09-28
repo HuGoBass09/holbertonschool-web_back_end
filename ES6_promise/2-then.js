@@ -1,4 +1,4 @@
-function getResponseFromAPI(promise) {
+function handleResponseFromAPI(promise) {
   return Promise.then(
     () => ({
       status: 200,
@@ -9,4 +9,4 @@ function getResponseFromAPI(promise) {
     .finally(() => console.log('Got a response from the API'));
 }
 
-export default getResponseFromAPI;
+export default handleResponseFromAPI;
