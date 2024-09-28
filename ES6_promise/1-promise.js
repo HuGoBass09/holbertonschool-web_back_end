@@ -6,7 +6,7 @@ function getResponseFromAPI(success) {
         body: 'Success',
       });
     } else {
-      reject(new Error('The fake API is not working correctly'));
+      reject(new Error('The fake API is not working currently'));
     }
   });
 }
