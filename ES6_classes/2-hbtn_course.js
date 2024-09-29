@@ -1,5 +1,5 @@
 export default class HolbertonCourse {
-  constructor(name = "", length = 0, students = []) {
+  constructor(name = '', length = 0, students = []) {
     this._name = name;
     this._length = length;
     this._students = students;
@@ -38,9 +38,10 @@ export default class HolbertonCourse {
           throw new TypeError('Students must be an array of strings');
         }
       }
+      this._students = value;
     } else {
       throw new TypeError('Students must be an array of strings');
     }
-    this._students = value;
+    
   }
 }
