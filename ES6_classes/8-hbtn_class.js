@@ -11,6 +11,6 @@ export default class HolbertonClass {
     if (dataType === 'number') {
       return `${this._size}`;
     }
-    return `${this._location}`; 
+    return `${this._location}`;
   }
 }
