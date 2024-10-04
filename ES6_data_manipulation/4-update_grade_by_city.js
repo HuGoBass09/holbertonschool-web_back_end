@@ -1,5 +1,5 @@
 function updateStudentGradeByCity(listOfStudents, city, newGrade) {
-  listOfStudents.filter((student) => (student.location === city))
+  return listOfStudents.filter((student) => (student.location === city))
     .map((item) => {
       const newRecord = { ...item };
       const newStudent = newGrade.find((student) => student.studentId === item.id);
