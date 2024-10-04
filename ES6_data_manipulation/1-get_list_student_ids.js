@@ -1,5 +1,5 @@
 function getListStudentIds(arr) {
-  if (!arr && !Array.isArray(arr)) {
+  if (!arr || !Array.isArray(arr)) {
     return [];
   }
 
