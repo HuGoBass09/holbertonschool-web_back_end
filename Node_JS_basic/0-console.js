@@ -1,3 +1,3 @@
 export default function displayMessage(str) {
-    process.stdout.write(str);
+  process.stdout.write(str);
 }
