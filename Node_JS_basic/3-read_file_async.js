@@ -10,7 +10,7 @@ function countStudents(path) {
       const response = [];
       let msg;
 
-      const lines = data.split('\n');
+      const lines = data.split(/\r?\n/);
 
       if (lines.length <= 1) {
         msg = 'Number of students: 0';
