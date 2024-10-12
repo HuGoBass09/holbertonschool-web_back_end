@@ -1,34 +1,40 @@
-const js = require('fs');
+const fs = require('fs');
 
 function countStudents(path) {
   let content;
+
   try {
-    content = js.readFileSync(path, 'utf-8');
+    content = fs.readFileSync(path);
   } catch (err) {
     throw new Error('Cannot load the database');
   }
 
-  const lines = content.split(/\r?\n/);
+  content = content.toString().split('\n');
 
-  if (lines.length <= 1) {
-    console.log('Number of students: 0');
-    return;
-  }
+  let students = content.filter((item) => item);
 
-  const [, ...rows] = lines;
-  const students = rows.map((row) => row.split(','));
-  const numberOfStudents = students.length;
-  console.log(`Number of students: ${numberOfStudents}`);
+  students = students.map((item) => item.split(','));
+
+  const NUMBER_OF_STUDENTS = students.length ? students.length - 1 : 0;
+  console.log(`Number of students: ${NUMBER_OF_STUDENTS}`);
 
   const fields = {};
-  for (const student of students) {
-    const [name, , , field] = student;
-    if (!fields[field]) fields[field] = [];
-    fields[field].push(name);
+  for (const i in students) {
+    if (i !== 0) {
+      if (!fields[students[i][3]]) fields[students[i][3]] = [];
+
+      fields[students[i][3]].push(students[i][0]);
+    }
   }
 
-  for (const [fiel, names] of Object.entries(fields)) {
-    console.log(`Number of students in ${fiel}: ${names.length}. List: ${names.join(', ')}`);
+  delete fields.field;
+
+  for (const key of Object.keys(fields)) {
+    console.log(
+      `Number of students in ${key}: ${fields[key].length}. List: ${fields[
+        key
+      ].join(', ')}`,
+    );
   }
 }
 

@@ -1,8 +1,8 @@
-const js = require('fs');
+const fs = require('fs');
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
-    js.readFile(path, 'utf-8', (err, data) => {
+    fs.readFile(path, 'utf8', (err, data) => {
       if (err) {
         reject(Error('Cannot load the database'));
         return;
@@ -10,36 +10,38 @@ function countStudents(path) {
       const response = [];
       let msg;
 
-      const lines = data.split(/\r?\n/);
+      const content = data.toString().split('\n');
 
-      if (lines.length <= 1) {
-        msg = 'Number of students: 0';
-        console.log(msg);
-        response.push(msg);
-        resolve(response);
-        return;
-      }
+      let students = content.filter((item) => item);
 
-      const [, ...rows] = lines;
-      const students = rows.map((row) => row.split(','));
-      const numberOfStudents = students.length;
-      msg = `Number of students: ${numberOfStudents}`;
+      students = students.map((item) => item.split(','));
+
+      const NUMBER_OF_STUDENTS = students.length ? students.length - 1 : 0;
+      msg = `Number of students: ${NUMBER_OF_STUDENTS}`;
       console.log(msg);
+
       response.push(msg);
 
       const fields = {};
-      for (const student of students) {
-        const [name, , , field] = student;
-        if (!fields[field]) fields[field] = [];
-        fields[field].push(name);
+      for (const i in students) {
+        if (i !== 0) {
+          if (!fields[students[i][3]]) fields[students[i][3]] = [];
+
+          fields[students[i][3]].push(students[i][0]);
+        }
       }
 
-      for (const [field, names] of Object.entries(fields)) {
-        msg = `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`;
+      delete fields.field;
+
+      for (const key of Object.keys(fields)) {
+        msg = `Number of students in ${key}: ${
+          fields[key].length
+        }. List: ${fields[key].join(', ')}`;
+
         console.log(msg);
+
         response.push(msg);
       }
-
       resolve(response);
     });
   });
