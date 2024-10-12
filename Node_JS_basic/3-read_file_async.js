@@ -28,7 +28,7 @@ function countStudents(path) {
 
       const fields = {};
       for (const student of students) {
-        const [name, , field] = student;
+        const [name, , , field] = student;
         if (!fields[field]) fields[field] = [];
         fields[field].push(name);
       }
